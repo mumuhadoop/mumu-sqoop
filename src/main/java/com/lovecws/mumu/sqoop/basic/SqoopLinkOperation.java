@@ -92,6 +92,70 @@ public class SqoopLinkOperation {
         }
     }
 
+
+    /**
+     * 创建ftp连接 ftp连接只能接受数据，不能传递数据。
+     *
+     * @param linkName
+     * @return
+     */
+    public MLink createFtpLink(String linkName) {
+        MLink link = sqoopClient.createLink("ftp-connector");
+        link.setName(linkName);
+        link.setCreationUser("babymm");
+        link.setCreationDate(new Date());
+
+        MLinkConfig linkConfig = link.getConnectorLinkConfig();
+        linkConfig.getStringInput("linkConfig.server").setValue("192.168.11.25");
+        linkConfig.getIntegerInput("linkConfig.port").setValue(2100);
+        linkConfig.getStringInput("linkConfig.username").setValue("root");
+        linkConfig.getStringInput("linkConfig.password").setValue("root");
+        Status status = null;
+        if (checkExists(linkName)) {
+            status = sqoopClient.updateLink(link, linkName);
+        } else {
+            status = sqoopClient.saveLink(link);
+        }
+        if (status.canProceed()) {
+            log.info("Created Link with Link Name : " + link.getName());
+            return link;
+        } else {
+            log.info("Something went wrong creating the link");
+            return null;
+        }
+    }
+
+
+    /**
+     * 创建kafka连接
+     *
+     * @param linkName
+     * @return
+     */
+    public MLink createKafkaLink(String linkName) {
+        MLink link = sqoopClient.createLink("kafka-connector");
+        link.setName(linkName);
+        link.setCreationUser("babymm");
+        link.setCreationDate(new Date());
+
+        MLinkConfig linkConfig = link.getConnectorLinkConfig();
+        linkConfig.getStringInput("linkConfig.brokerList").setValue("192.168.11.25:9092");
+        linkConfig.getStringInput("linkConfig.zookeeperConnect").setValue("192.168.11.25:2181");
+        Status status = null;
+        if (checkExists(linkName)) {
+            status = sqoopClient.updateLink(link, linkName);
+        } else {
+            status = sqoopClient.saveLink(link);
+        }
+        if (status.canProceed()) {
+            log.info("Created Link with Link Name : " + link.getName());
+            return link;
+        } else {
+            log.info("Something went wrong creating the link");
+            return null;
+        }
+    }
+
     /**
      * 删除link
      *

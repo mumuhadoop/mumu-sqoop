@@ -22,4 +22,14 @@ public class SqoopLinkOperationTest {
     public void deleteAllLinks() {
         sqoopLinkOperation.deleteAllLinks();
     }
+
+    @Test
+    public void createFtpLink() {
+        sqoopLinkOperation.createFtpLink("ftplink");
+    }
+
+    @Test
+    public void createKafkaLink() {
+        sqoopLinkOperation.createKafkaLink("kafkaLink");
+    }
 }

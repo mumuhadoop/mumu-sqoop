@@ -8,16 +8,28 @@ mumu-sqoop是一个demo程序，主要通过这个项目来了解sqoop的使用�
 然后通过大数据分析工具(pig、hive、spark、mahout等)来进行分析，分析出用户的习惯。
 
 
+## sqoop
+
+Name | Version | Class | Supported Directions
+---|---|---|---
+generic-jdbc-connector | 1.99.7 | org.apache.sqoop.connector.jdbc.GenericJdbcConnector        | FROM/TO
+kite-connector         | 1.99.7 | org.apache.sqoop.connector.kite.KiteConnector               | FROM/TO
+oracle-jdbc-connector  | 1.99.7 | org.apache.sqoop.connector.jdbc.oracle.OracleJdbcConnector  | FROM/TO
+ftp-connector          | 1.99.7 | org.apache.sqoop.connector.ftp.FtpConnector                 | TO
+hdfs-connector         | 1.99.7 | org.apache.sqoop.connector.hdfs.HdfsConnector               | FROM/TO
+kafka-connector        | 1.99.7 | org.apache.sqoop.connector.kafka.KafkaConnector             | TO
+sftp-connector         | 1.99.7 | org.apache.sqoop.connector.sftp.SftpConnector               | TO
+
 ## 注意事项
 创建SqoopClient的时候传递serverUrl要以'/'号结尾，要不然报错
 ```
 Exception: org.apache.sqoop.common.SqoopException Message: CLIENT_0004:Unable to find valid Kerberos ticket cache (kinit)
 ```
 
-如果以root用户开启sqoop2服务则需要添加hadoop的root代理登录，如果是其他账号同理,[查看更多](http://sqoop.apache.org/docs/1.99.7/admin/Installation.html)
+如果以root用户开启sqoop2服务则需要添加hadoop的root代理登录，如果是其他账号同理,[查看更多](http://sqoop.apache.org/docs/1.99.7/admin/Installation.html)。
 修改core-site.xml 添加如下属性
 ```
-   <configuration>
+<configuration>
        <property>
             <name>hadoop.tmp.dir</name>
             <value>/opt/hadoop</value>
@@ -28,6 +40,7 @@ Exception: org.apache.sqoop.common.SqoopException Message: CLIENT_0004:Unable to
         </property>
     </configuration>
 ```
+
 
 修改container-executor.cfg 添加如下属性
 ```

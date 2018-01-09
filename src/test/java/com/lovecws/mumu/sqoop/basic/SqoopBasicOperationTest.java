@@ -1,6 +1,5 @@
 package com.lovecws.mumu.sqoop.basic;
 
-import com.lovecws.mumu.sqoop.SqoopConfiguration;
 import org.junit.Test;
 
 import java.io.IOException;

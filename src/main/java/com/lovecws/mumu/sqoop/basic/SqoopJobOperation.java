@@ -47,15 +47,17 @@ public class SqoopJobOperation {
 
         fromJobConfig.getStringInput("fromJobConfig.schemaName").setValue("mmsns");
         fromJobConfig.getStringInput("fromJobConfig.tableName").setValue("ma_action");
-        fromJobConfig.getListInput("fromJobConfig.columnList").setValue(Arrays.asList("action_id", "action_status", "action_date", "action_type", "action_content",
+        /*fromJobConfig.getListInput("fromJobConfig.columnList").setValue(Arrays.asList("action_id", "action_status", "action_date", "action_type","action_content",
                 "word_count", "user_id", "collect_count", "vote_count", "comment_count",
-                "reprint_count", "reprint_action_content", "reprint_action_id", "reprint_user_id"));
+                "reprint_count", "reprint_action_content", "reprint_action_id", "reprint_user_id"));*/
 
         MToConfig toJobConfig = job.getToJobConfig();
         toJobConfig.getStringInput("toJobConfig.outputDirectory").setValue(outputDirectory);
         toJobConfig.getEnumInput("toJobConfig.outputFormat").setValue("TEXT_FILE");
         toJobConfig.getEnumInput("toJobConfig.compression").setValue("NONE");
+        toJobConfig.getStringInput("toJobConfig.nullValue").setValue("N");
         toJobConfig.getBooleanInput("toJobConfig.overrideNullValue").setValue(true);
+        toJobConfig.getBooleanInput("toJobConfig.appendMode").setValue(true);
 
         MDriverConfig driverConfig = job.getDriverConfig();
         driverConfig.getIntegerInput("throttlingConfig.numExtractors").setValue(1);
@@ -93,13 +95,15 @@ public class SqoopJobOperation {
         MFromConfig fromJobConfig = job.getFromJobConfig();
 
         fromJobConfig.getStringInput("fromJobConfig.inputDirectory").setValue(inputDirectory);
+        fromJobConfig.getStringInput("fromJobConfig.nullValue").setValue("N");
+        fromJobConfig.getBooleanInput("fromJobConfig.overrideNullValue").setValue(true);
 
         MToConfig toJobConfig = job.getToJobConfig();
         toJobConfig.getStringInput("toJobConfig.schemaName").setValue("mmsns");
         toJobConfig.getStringInput("toJobConfig.tableName").setValue("ma_sqoop_action");
-        toJobConfig.getListInput("toJobConfig.columnList").setValue(Arrays.asList("action_id", "action_status", "action_date", "action_type", "action_content",
+        /*toJobConfig.getListInput("toJobConfig.columnList").setValue(Arrays.asList("action_id", "action_status", "action_date", "action_type","action_content",
                 "word_count", "user_id", "collect_count", "vote_count", "comment_count",
-                "reprint_count", "reprint_action_content", "reprint_action_id", "reprint_user_id"));
+                "reprint_count", "reprint_action_content", "reprint_action_id", "reprint_user_id"));*/
 
         MDriverConfig driverConfig = job.getDriverConfig();
         driverConfig.getIntegerInput("throttlingConfig.numExtractors").setValue(1);
@@ -118,6 +122,50 @@ public class SqoopJobOperation {
             return null;
         }
     }
+
+
+    /**
+     * 创建从hdfs中导出数据到kafka中
+     *
+     * @param jobName
+     * @param fromLink
+     * @param toLink
+     * @param inputDirectory
+     * @return
+     */
+    public MJob createHdfsToKafkaJob(String jobName, String fromLink, String toLink, String inputDirectory) {
+        MJob job = sqoopClient.createJob(fromLink, toLink);
+        job.setName(jobName);
+        job.setCreationUser("babymumu");
+        job.setCreationDate(new Date());
+
+        MFromConfig fromJobConfig = job.getFromJobConfig();
+
+        fromJobConfig.getStringInput("fromJobConfig.inputDirectory").setValue(inputDirectory);
+        fromJobConfig.getStringInput("fromJobConfig.nullValue").setValue("N");
+        fromJobConfig.getBooleanInput("fromJobConfig.overrideNullValue").setValue(true);
+
+        MToConfig toJobConfig = job.getToJobConfig();
+        toJobConfig.getStringInput("toJobConfig.topic").setValue("mmsns-action-topic");
+
+        MDriverConfig driverConfig = job.getDriverConfig();
+        driverConfig.getIntegerInput("throttlingConfig.numExtractors").setValue(1);
+
+        Status status = null;
+        if (checkExistsJob(jobName)) {
+            status = sqoopClient.updateJob(job, jobName);
+        } else {
+            status = sqoopClient.saveJob(job);
+        }
+        if (status.canProceed()) {
+            log.info("Created Job with Job Name: " + job.getName());
+            return job;
+        } else {
+            log.info("Something went wrong creating the job");
+            return null;
+        }
+    }
+
 
     /**
      * 开始执行任务
