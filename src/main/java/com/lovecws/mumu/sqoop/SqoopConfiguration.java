@@ -18,6 +18,10 @@ public class SqoopConfiguration {
     public static final String SQOOP_SERVER_ADDRESS = "http://192.168.11.25:12000/sqoop/";
 
     public static SqoopClient sqoopClient() {
-        return new SqoopClient(SQOOP_SERVER_ADDRESS);
+        String sqoop_server_address = System.getenv("SQOOP_SERVER_ADDRESS");
+        if (sqoop_server_address == null) {
+            sqoop_server_address = SQOOP_SERVER_ADDRESS;
+        }
+        return new SqoopClient(sqoop_server_address);
     }
 }

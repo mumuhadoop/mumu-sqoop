@@ -50,6 +50,7 @@ public class SqoopJobFactory {
 
         MDriverConfig driverConfig = job.getDriverConfig();
         driverConfig.getIntegerInput("throttlingConfig.numExtractors").setValue(1);
+        driverConfig.getIntegerInput("throttlingConfig.numLoaders").setValue(1);
 
         Status status = null;
         if (SqoopUtil.checkExists(sqoopClient, sqoopJobConfig.getJobName())) {

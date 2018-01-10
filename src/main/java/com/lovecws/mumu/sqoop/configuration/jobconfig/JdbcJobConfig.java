@@ -17,18 +17,48 @@ public class JdbcJobConfig extends BaseJobConfig {
     private String tableName;
     private String columnList;
 
+    private String sql;
+    private String partitionColumn;
+    private boolean allowNullValueInPartitionColumn;
+    private String boundaryQuery;
+
+    public JdbcJobConfig(String schemaName, String sql) {
+        this.schemaName = schemaName;
+        this.sql = sql;
+    }
+
     public JdbcJobConfig(String schemaName, String tableName, String columnList) {
         this.schemaName = schemaName;
         this.tableName = tableName;
         this.columnList = columnList;
     }
 
+    public JdbcJobConfig(String schemaName, String sql, String partitionColumn, boolean allowNullValueInPartitionColumn, String boundaryQuery) {
+        this.schemaName = schemaName;
+        this.sql = sql;
+        this.partitionColumn = partitionColumn;
+        this.allowNullValueInPartitionColumn = allowNullValueInPartitionColumn;
+        this.boundaryQuery = boundaryQuery;
+    }
+
     @Override
     public MFromConfig fromConfig(MFromConfig fromConfig) {
         fromConfig.getStringInput("fromJobConfig.schemaName").setValue(schemaName);
-        fromConfig.getStringInput("fromJobConfig.tableName").setValue(tableName);
+        if (tableName != null) {
+            fromConfig.getStringInput("fromJobConfig.tableName").setValue(tableName);
+        }
         if (columnList != null) {
             fromConfig.getListInput("fromJobConfig.columnList").setValue(Arrays.asList(columnList.split(",")));
+        }
+        if (sql != null) {
+            fromConfig.getStringInput("fromJobConfig.sql").setValue(sql);
+        }
+        if (partitionColumn != null) {
+            fromConfig.getStringInput("fromJobConfig.partitionColumn").setValue(partitionColumn);
+            fromConfig.getBooleanInput("fromJobConfig.allowNullValueInPartitionColumn").setValue(allowNullValueInPartitionColumn);
+        }
+        if (boundaryQuery != null) {
+            fromConfig.getStringInput("fromJobConfig.boundaryQuery").setValue(boundaryQuery);
         }
         return fromConfig;
     }
@@ -65,5 +95,37 @@ public class JdbcJobConfig extends BaseJobConfig {
 
     public void setColumnList(String columnList) {
         this.columnList = columnList;
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
+
+    public String getPartitionColumn() {
+        return partitionColumn;
+    }
+
+    public void setPartitionColumn(String partitionColumn) {
+        this.partitionColumn = partitionColumn;
+    }
+
+    public boolean isAllowNullValueInPartitionColumn() {
+        return allowNullValueInPartitionColumn;
+    }
+
+    public void setAllowNullValueInPartitionColumn(boolean allowNullValueInPartitionColumn) {
+        this.allowNullValueInPartitionColumn = allowNullValueInPartitionColumn;
+    }
+
+    public String getBoundaryQuery() {
+        return boundaryQuery;
+    }
+
+    public void setBoundaryQuery(String boundaryQuery) {
+        this.boundaryQuery = boundaryQuery;
     }
 }

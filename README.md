@@ -4,14 +4,14 @@
 [![Build Status](https://travis-ci.org/mumuhadoop/mumu-sqoop.svg?branch=master)](https://travis-ci.org/mumuhadoop/mumu-sqoop)
 [![codecov](https://codecov.io/gh/mumuhadoop/mumu-sqoop/branch/master/graph/badge.svg)](https://codecov.io/gh/mumuhadoop/mumu-sqoop)
 
-mumu-sqoop是一个demo程序，主要通过这个项目来了解sqoop的使用方式和运行原理,为mmsns项目的大数据导出做准备。使用sqoop可以将数据库里面的数据导出到hdfs、hive中，
-然后通过大数据分析工具(pig、hive、spark、mahout等)来进行分析，分析出用户的习惯。
+mumu-sqoop是一个demo程序，主要通过这个项目来了解sqoop的使用方式和运行原理,为mmsns项目的大数据导出做准备。使用sqoop可以将数据库里面的数据导出到hdfs中，然后通过大数据分析工具(pig、hive、spark、mahout等)来分析导出的数据，实现数据的ETL。并且导出数据可以指定导出文件格式(TEXT_FILE、SEQUENCE_FILE、PARQUET_FILE)和是否q启用压缩(NONE,DEFAULT,DEFLATE,GZIP,BZIP2,LZO,LZ4,SNAPPY,CUSTOM)。
 
 
 ## sqoop
-
+ 
+### sqoop支持的connector  
 Name | Version | Class | Supported Directions
----|---|---|---
+----|----|----|----
 generic-jdbc-connector | 1.99.7 | org.apache.sqoop.connector.jdbc.GenericJdbcConnector        | FROM/TO
 kite-connector         | 1.99.7 | org.apache.sqoop.connector.kite.KiteConnector               | FROM/TO
 oracle-jdbc-connector  | 1.99.7 | org.apache.sqoop.connector.jdbc.oracle.OracleJdbcConnector  | FROM/TO
@@ -19,6 +19,12 @@ ftp-connector          | 1.99.7 | org.apache.sqoop.connector.ftp.FtpConnector   
 hdfs-connector         | 1.99.7 | org.apache.sqoop.connector.hdfs.HdfsConnector               | FROM/TO
 kafka-connector        | 1.99.7 | org.apache.sqoop.connector.kafka.KafkaConnector             | TO
 sftp-connector         | 1.99.7 | org.apache.sqoop.connector.sftp.SftpConnector               | TO
+
+### sqoop在hadoop家族的地位  
+![sqoop在hadoop中的地位](https://github.com/mumuhadoop/mumu-sqoop/raw/master/doc/images/hadoopfamily.png?raw=true)
+
+### sqoop工作原理
+![sqoop工作原理](https://github.com/mumuhadoop/mumu-sqoop/raw/master/doc/images/sqoop.png?raw=true)
 
 ## 注意事项
 创建SqoopClient的时候传递serverUrl要以'/'号结尾，要不然报错
