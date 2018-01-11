@@ -3,6 +3,7 @@ package com.lovecws.mumu.sqoop.configuration;
 import com.lovecws.mumu.sqoop.SqoopConfiguration;
 import com.lovecws.mumu.sqoop.configuration.jobconfig.HdfsJobConfig;
 import com.lovecws.mumu.sqoop.configuration.jobconfig.JdbcJobConfig;
+import com.lovecws.mumu.sqoop.configuration.jobconfig.KiteJobConfig;
 import org.apache.sqoop.client.SqoopClient;
 import org.apache.sqoop.model.MJob;
 import org.junit.Test;
@@ -41,6 +42,61 @@ public class SqoopJobFactoryTest {
                 sqoopJobConfig,
                 "hdfs-mmsns-action",
                 "mysql-mmsns-action");
+        MJob job = sqoopJobFactory.instance();
+        System.out.println(job);
+    }
+
+    /**
+     * 将jdbc的数据导出到kite数据集中
+     */
+    @Test
+    public void hdfsToKite() {
+        SqoopJobConfig sqoopJobConfig = new SqoopJobConfig("hdfsToKitejob", "babymm",
+                new JdbcJobConfig("mmsns", "ma_action", null),
+                new KiteJobConfig("dataset:hdfs://192.168.11.25:9000/mumu/sqoop/kitenamespace/kitedataset", "AVRO"));
+
+        SqoopClient sqoopClient = SqoopConfiguration.sqoopClient();
+        SqoopJobFactory sqoopJobFactory = new SqoopJobFactory(sqoopClient,
+                sqoopJobConfig,
+                "mysql-mmsns-action",
+                "kite-link");
+        MJob job = sqoopJobFactory.instance();
+        System.out.println(job);
+    }
+
+
+    /**
+     * hdfs中的kite数据集导出到本地数据集 error
+     */
+    @Test
+    public void kiteToKitejob() {
+        SqoopJobConfig sqoopJobConfig = new SqoopJobConfig("kiteToKiteJob", "babymm",
+                new KiteJobConfig("dataset:hdfs://192.168.11.25:9000/mumu/sqoop/kitenamespace/kitedataset"),
+                new KiteJobConfig("dataset:file:///mumu/sqoop/kitenamespace/kitedataset", "AVRO"));
+
+        SqoopClient sqoopClient = SqoopConfiguration.sqoopClient();
+        SqoopJobFactory sqoopJobFactory = new SqoopJobFactory(sqoopClient,
+                sqoopJobConfig,
+                "kite-link",
+                "kite-link2");
+        MJob job = sqoopJobFactory.instance();
+        System.out.println(job);
+    }
+
+    /**
+     * hdfs中的kite数据集导出到本地数据集 error
+     */
+    @Test
+    public void kiteToHdfsJob() {
+        SqoopJobConfig sqoopJobConfig = new SqoopJobConfig("kiteToHdfsJob", "babymm",
+                new KiteJobConfig("dataset:hdfs://192.168.11.25:9000/mumu/sqoop/kitenamespace/kitedataset"),
+                new HdfsJobConfig("/mumu/sqoop/mmsns/kite", true, "N"));
+
+        SqoopClient sqoopClient = SqoopConfiguration.sqoopClient();
+        SqoopJobFactory sqoopJobFactory = new SqoopJobFactory(sqoopClient,
+                sqoopJobConfig,
+                "kite-link",
+                "hdfs-mmsns-action");
         MJob job = sqoopJobFactory.instance();
         System.out.println(job);
     }

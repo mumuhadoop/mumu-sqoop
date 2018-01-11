@@ -12,7 +12,11 @@ import org.apache.sqoop.model.MToConfig;
 public class KiteJobConfig extends BaseJobConfig {
 
     private String uri;
-    private String fileFormat;//PARQUET
+    private String fileFormat;//CSV,AVRO,PARQUET
+
+    public KiteJobConfig(String uri) {
+        this.uri = uri;
+    }
 
     public KiteJobConfig(String uri, String fileFormat) {
         this.uri = uri;
@@ -21,14 +25,14 @@ public class KiteJobConfig extends BaseJobConfig {
 
     @Override
     public MFromConfig fromConfig(MFromConfig fromConfig) {
-        fromConfig.getStringInput("toJobConfig.uri").setValue(uri);
+        fromConfig.getStringInput("fromJobConfig.uri").setValue(uri);
         return fromConfig;
     }
 
     @Override
     public MToConfig toConfig(MToConfig toConfig) {
         toConfig.getStringInput("toJobConfig.uri").setValue(uri);
-        toConfig.getStringInput("toJobConfig.fileFormat").setValue(fileFormat);
+        toConfig.getEnumInput("toJobConfig.fileFormat").setValue(fileFormat);
         return toConfig;
     }
 

@@ -28,9 +28,9 @@ public class SqoopLinkFactoryTest {
 
     @Test
     public void createKiteLink() {
-        SqoopLinkConfig sqoopLinkConfig = new SqoopLinkConfig("kite-link",
+        SqoopLinkConfig sqoopLinkConfig = new SqoopLinkConfig("kite-link3",
                 "babymm",
-                new KiteLinkConfig("hdfs://192.168.11.25:9000/mumu"));
+                new KiteLinkConfig("", "/usr/local/hadoop-2.7.3/etc/hadoop/"));
         SqoopLinkFactory factory = new SqoopLinkFactory(SqoopConfiguration.sqoopClient(),
                 sqoopLinkConfig);
         MLink mLink = factory.instance();
